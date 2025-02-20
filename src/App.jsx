@@ -1,16 +1,41 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
+import AppContext from "./context/app-context";
+import useApis from "./use-apis";
+import Navbar from "./components/navbar";
+import { Button, Flex, Form, Input, Select } from "antd";
+import ContainerWrapper from "./components/container-wrapper";
+import { GrSend } from "react-icons/gr";
+import { FaRobot, FaUser } from "react-icons/fa";
+import { VscLoading } from "react-icons/vsc";
 
 const TranslatorApp = () => {
-  const [detectedLanguage, setDetectedLanguage] = useState("");
-  const [confidence, setConfidence] = useState("");
-  const [translatedText, setTranslatedText] = useState("");
-  const [isTranslationSupported, setIsTranslationSupported] = useState(false);
-  const [detector, setDetector] = useState(null);
-  const [summarizedText, setSummarizedText] = useState("");
+  const [form] = Form.useForm();
+  const [userOutput, setUserOutput] = useState("");
+  const [selectedLang, setSelectedLang] = useState("");
 
-  const inputRef = useRef(null);
-  const outputRef = useRef(null);
-  const languageRef = useRef(null);
+  const languages = [
+    { label: "English", value: "en" },
+    { label: "Spanish", value: "es" },
+    { label: "Portuguese", value: "pt" },
+    { label: "French", value: "fr" },
+    { label: "Turkish", value: "tr" },
+    { label: "Russian", value: "ru" },
+  ];
+
+  const {
+    detectedLanguage,
+    setDetector,
+    isTranslationSupported,
+    setIsTranslationSupported,
+    translatedText,
+    summarizedText,
+    confidence,
+    isTranslatingLanguage,
+    isDetectingLanguage,
+    isSummarizing,
+  } = useContext(AppContext);
+
+  const { translatorAPI, detectorAPI, summarizerAPI } = useApis();
 
   useEffect(() => {
     const initializeTranslation = async () => {
@@ -28,153 +53,134 @@ const TranslatorApp = () => {
     initializeTranslation();
   }, []);
 
-  const detectLanguage = async () => {
-    if (!detector || !inputRef.current.value.trim()) {
-      setDetectedLanguage("Not sure what language this is");
-      return;
-    }
-
-    try {
-      const { detectedLanguage, confidence } = (
-        await detector.detect(inputRef.current.value.trim())
-      )[0];
-      setDetectedLanguage(languageTagToHumanReadable(detectedLanguage, "en"));
-      setConfidence(`${(confidence * 100).toFixed(1)}% sure`);
-    } catch (error) {
-      console.error("Detection error:", error);
-    }
-  };
-
-  const handleSummarize = async (text) => {
-    const options = {
-      // sharedContext: 'This is a scientific article',
-      type: "key-points",
-      format: "markdown",
-      length: "medium",
-    };
-
-    const available = (await self.ai.summarizer.capabilities()).available;
-    try {
-      let summarizer;
-      if (available === "no") {
-        alert("Summarizer not supported in this browser");
-        return;
-      }
-      if (available === "readily") {
-        summarizer = await self.ai.summarizer.create(options);
-        const summary = await summarizer.summarize(text);
-        setSummarizedText(summary);
-      } else {
-        summarizer = await self.ai.summarizer.create(options);
-        const summary = await summarizer.summarize(text);
-        setSummarizedText(summary);
-        summarizer.addEventListener("downloadprogress", (e) => {
-          console.log(e.loaded, e.total);
-        });
-        await summarizer.ready;
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleTranslate = async (e) => {
-    e.preventDefault();
-
-    const isDetectorAvailable = (await self.ai.languageDetector.capabilities())
-      .available;
-    if (!detector || isDetectorAvailable === "no") return;
-
-    try {
-      const sourceLanguage = (
-        await detector.detect(inputRef.current.value.trim())
-      )[0].detectedLanguage;
-
-      if (
-        detectedLanguage ===
-          languageTagToHumanReadable(
-            languageRef.current.value.trim(),
-            detectedLanguage
-          ) ||
-        !["en", "es", "fr", "tr", "pt", "ru"].includes(sourceLanguage)
-      ) {
-        setTranslatedText(
-          "Can only translate English ↔ Spanish and English ↔ Japanese."
-        );
-        return;
-      }
-
-      const translator = await self.ai.translator.create({
-        sourceLanguage,
-        targetLanguage: languageRef.current.value,
-      });
-
-      setTranslatedText(
-        await translator.translate(inputRef.current.value.trim())
-      );
-    } catch (err) {
-      // if (
-      //   detectedLanguage ===
-      //   languageTagToHumanReadable(
-      //     languageRef.current.value.trim(),
-      //     detectedLanguage
-      //   )
-      // ) {
-      //   setTranslatedText(
-      //     "Cannot Translate English to English. Please select a different language"
-      //   );
-      // } else {
-      setTranslatedText("An error occurred. Please try again.");
-      console.error(err.name, err.message);
-      // }
-    }
-  };
-
-  const languageTagToHumanReadable = (languageTag, targetLanguage) => {
-    const displayNames = new Intl.DisplayNames([targetLanguage], {
-      type: "language",
-    });
-    return displayNames.of(languageTag);
+  const handleTranslate = (values) => {
+    // translatorAPI(inputRef.current.value, languageRef.current.value);
+    detectorAPI(values.inputText);
+    setUserOutput(values.inputText);
+    console.log(values);
+    // form.resetFields();
   };
 
   return (
-    <div>
+    <>
       {!isTranslationSupported && (
-        <p className="not-supported-message">
-          Translation is not supported on this browser.
+        <p className="text-red-300 text-center italic text-2xl px-2.5 h-screen w-screen flex flex-col gap-8 items-center justify-center">
+          Chrome Built-in API is not supported on this browser. <br />
+          <span className="text-gray-300 text-xl">
+            Please use Google Chrome or Chrome Canary
+          </span>
         </p>
       )}
 
-      {isTranslationSupported && (
-        <form onSubmit={handleTranslate} style={{ visibility: "visible" }}>
-          <textarea
-            ref={inputRef}
-            onInput={detectLanguage}
-            placeholder="Type something..."
-          />
-          <p>
-            {confidence} {detectedLanguage}
-          </p>
+      <section>
+        <Navbar />
+        <ContainerWrapper>
+          {/* <div className="absolute bottom-0 mb-4 w-[inherit] mx-auto"> */}
+          <div className="h-screen flex flex-col-reverse">
+            <Form form={form} onFinish={(values) => handleTranslate(values)}>
+              <div className="relative">
+                <Form.Item name="inputText">
+                  <Input.TextArea
+                    rows={5}
+                    style={{
+                      resize: "none",
+                      // paddingRight: "3rem",
+                    }}
+                    placeholder="Insert text here..."
+                  />
+                </Form.Item>
+                <div className="absolute right-0 bottom-0 p-2">
+                  <Button
+                    type="primary"
+                    size="large"
+                    htmlType="submit"
+                    style={{
+                      borderRadius: "50px",
+                    }}
+                  >
+                    <GrSend />
+                  </Button>
+                </div>
+              </div>
+            </Form>
 
-          <select ref={languageRef}>
-            <option value="en">English</option>
-            <option value="es">Spanish</option>
-            <option value="fr">French</option>
-            <option value="pt">Portuguese</option>
-            <option value="tr">Turkish</option>
-            <option value="ru">Russian</option>
-          </select>
-
-          <button type="submit">Translate</button>
-        </form>
-      )}
-
-      <output ref={outputRef}>{translatedText}</output>
-      <button onClick={() => handleSummarize(inputRef.current.value.trim())}>
-        Summarize
-      </button>
-      <summary>{summarizedText}</summary>
-    </div>
+            <section className="flex flex-col-reverse h-[calc(60vh)]">
+              <div className="mb-8 overflow-scroll flex flex-col gap-8">
+                {/* User Output */}
+                {userOutput && (
+                  <aside className="w-full flex items-start gap-4 justify-end">
+                    <Flex vertical gap={3} align="end">
+                      <div className="w-[16rem] py-4 px-4 relative bg-white/80 text-black mt-3 rounded-lg">
+                        <p className="absolute -right-3 top-1 h-0 w-0 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent border-l-[12px] border-gray-200/80"></p>
+                        <p>{userOutput}</p>
+                        <Flex className="mt-3" gap={5}>
+                          <Select
+                            placeholder={detectedLanguage}
+                            style={{
+                              width: 110,
+                            }}
+                            options={languages.map((lang) => ({
+                              label: lang.label,
+                              value: lang.value,
+                            }))}
+                            onChange={(val) => setSelectedLang(val)}
+                          />
+                          <Button
+                            type="primary"
+                            onClick={() =>
+                              translatorAPI(userOutput, selectedLang)
+                            }
+                          >
+                            Translate
+                          </Button>
+                        </Flex>
+                      </div>
+                      <p className="text-xs text-orange-400">
+                        {isDetectingLanguage
+                          ? "detecting language..."
+                          : detectedLanguage}
+                      </p>
+                    </Flex>
+                    <div className="w-10 h-10 rounded-full bg-gray-50/60 flex items-center justify-center">
+                      <FaUser className="text-blue-950" />
+                    </div>
+                  </aside>
+                )}
+                {/* Translated Text */}
+                {isTranslatingLanguage ? (
+                  <VscLoading className="animate-spin" />
+                ) : (
+                  <aside className="w-full flex justify-start gap-4">
+                    <div className="w-10 h-10 rounded-full bg-gray-50/60 flex items-center justify-center">
+                      <FaRobot className="text-blue-950" />
+                    </div>
+                    <Flex vertical gap={3}>
+                      <div className="w-[16rem] py-4 px-4 relative bg-white/80 text-black mt-3 rounded-lg">
+                        <p className="absolute -left-3 top-1 h-0 w-0 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent border-r-[12px] border-gray-200/80"></p>
+                        <p>{translatedText}</p>
+                      </div>
+                      <p className="text-xs text-orange-400">Translated Text</p>
+                    </Flex>
+                  </aside>
+                )}
+                {/* Summarized Text */}
+                {summarizedText && (
+                  <aside className="w-full flex justify-start">
+                    <div className="w-[16rem] py-2 px-7 relative bg-white/80 text-black mt-3 rounded-lg">
+                      <p className="absolute -right-3 top-1 h-0 w-0 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent border-l-[12px] border-gray-200/80"></p>
+                      <p>{summarizedText}</p>
+                    </div>
+                    <div className="w-10 h-10 rounded-full bg-gray-50/60 flex items-center justify-center">
+                      <FaRobot className="text-blue-950" />
+                    </div>
+                  </aside>
+                )}
+              </div>
+            </section>
+          </div>
+        </ContainerWrapper>
+      </section>
+    </>
   );
 };
 

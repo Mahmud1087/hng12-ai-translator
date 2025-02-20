@@ -7,7 +7,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #070425;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -15,10 +15,16 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-body {
-  margin: 0;
-  /* display: flex; */
-  /* place-items: center; */
-  /* min-width: 320px; */
-  /* min-height: 100vh; */
+.ant-input,
+.ant-select {
+  @apply bg-gray-600/20 rounded-xl border border-gray-50/55 text-gray-50/70;
+}
+
+.ant-input:focus,
+.ant-input:hover {
+  @apply bg-gray-600/20;
+}
+
+.ant-input::placeholder {
+  @apply text-gray-50/55 italic;
 }
