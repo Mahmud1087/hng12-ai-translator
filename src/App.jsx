@@ -110,7 +110,7 @@ const TranslatorApp = () => {
                 {userOutput && (
                   <aside className="w-full flex items-start gap-4 justify-end">
                     <Flex vertical gap={7} align="end">
-                      <div className="w-[17rem] py-4 px-4 relative bg-white/80 text-black mt-3 rounded-lg md:w-[20rem] lg:w-[22rem]">
+                      <div className="w-[17rem] py-4 px-4 relative bg-white/80 text-black mt-3 rounded-lg md:w-[20rem] lg:w-[26rem]">
                         <p className="absolute -right-3 top-1 h-0 w-0 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent border-l-[12px] border-gray-200/80"></p>
                         <p className="mb-3">{userOutput}</p>
                         <Flex gap={5}>
@@ -165,7 +165,7 @@ const TranslatorApp = () => {
                       <FaRobot className="text-blue-950" />
                     </div>
                     <Flex vertical gap={3}>
-                      <div className="w-[17rem] py-4 px-4 relative bg-white/80 text-black mt-3 rounded-lg md:w-[20rem] lg:w-[22rem]">
+                      <div className="w-[17rem] py-4 px-4 relative bg-white/80 text-black mt-3 rounded-lg md:w-[20rem] lg:w-[26rem]">
                         <p className="absolute -left-3 top-1 h-0 w-0 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent border-r-[12px] border-gray-200/80"></p>
                         <p>{translatedText}</p>
                       </div>
@@ -186,7 +186,7 @@ const TranslatorApp = () => {
                       <FaRobot className="text-blue-950" />
                     </div>
                     <Flex vertical gap={3}>
-                      <div className="w-[17rem] py-4 px-4 relative bg-white/80 text-black mt-3 rounded-lg md:w-[20rem] lg:w-[22rem]">
+                      <div className="w-[17rem] py-4 px-4 relative bg-white/80 text-black mt-3 rounded-lg md:w-[20rem] lg:w-[26rem]">
                         <p className="absolute -left-3 top-1 h-0 w-0 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent border-r-[12px] border-gray-200/80"></p>
                         <p>{summarizedText}</p>
                       </div>
