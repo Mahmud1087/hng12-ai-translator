@@ -109,11 +109,11 @@ const TranslatorApp = () => {
                 {/* User Output */}
                 {userOutput && (
                   <aside className="w-full flex items-start gap-4 justify-end">
-                    <Flex vertical gap={3} align="end">
+                    <Flex vertical gap={7} align="end">
                       <div className="w-[16rem] py-4 px-4 relative bg-white/80 text-black mt-3 rounded-lg">
                         <p className="absolute -right-3 top-1 h-0 w-0 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent border-l-[12px] border-gray-200/80"></p>
-                        <p>{userOutput}</p>
-                        <Flex className="mt-3" gap={5}>
+                        <p className="mb-3">{userOutput}</p>
+                        <Flex gap={5}>
                           <Select
                             placeholder={detectedLanguage}
                             style={{
@@ -147,9 +147,13 @@ const TranslatorApp = () => {
                   </aside>
                 )}
                 {/* Translated Text */}
-                {isTranslatingLanguage ? (
-                  <VscLoading className="animate-spin" />
-                ) : (
+                {isTranslatingLanguage && (
+                  <Flex align="center" gap={7}>
+                    <p>Translating</p>
+                    <VscLoading className="animate-spin" />
+                  </Flex>
+                )}{" "}
+                {translatedText && (
                   <aside className="w-full flex justify-start gap-4">
                     <div className="w-10 h-10 rounded-full bg-gray-50/60 flex items-center justify-center">
                       <FaRobot className="text-blue-950" />
@@ -164,15 +168,24 @@ const TranslatorApp = () => {
                   </aside>
                 )}
                 {/* Summarized Text */}
+                {isSummarizing && (
+                  <Flex align="center" gap={7}>
+                    <p>Summarizing</p>
+                    <VscLoading className="animate-spin" />
+                  </Flex>
+                )}{" "}
                 {summarizedText && (
-                  <aside className="w-full flex justify-start">
-                    <div className="w-[16rem] py-2 px-7 relative bg-white/80 text-black mt-3 rounded-lg">
-                      <p className="absolute -right-3 top-1 h-0 w-0 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent border-l-[12px] border-gray-200/80"></p>
-                      <p>{summarizedText}</p>
-                    </div>
+                  <aside className="w-full flex justify-start gap-4">
                     <div className="w-10 h-10 rounded-full bg-gray-50/60 flex items-center justify-center">
                       <FaRobot className="text-blue-950" />
                     </div>
+                    <Flex vertical gap={3}>
+                      <div className="w-[16rem] py-4 px-4 relative bg-white/80 text-black mt-3 rounded-lg">
+                        <p className="absolute -left-3 top-1 h-0 w-0 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent border-r-[12px] border-gray-200/80"></p>
+                        <p>{summarizedText}</p>
+                      </div>
+                      <p className="text-xs text-orange-400">Summarized Text</p>
+                    </Flex>
                   </aside>
                 )}
               </div>
