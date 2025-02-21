@@ -1,16 +1,13 @@
 import { Button } from "antd";
 import ContainerWrapper from "./container-wrapper";
+import heroImg from "../assets/hero-img.jpg";
 
 const Homepage = ({ goToChat }) => {
   return (
     <div className="w-screen h-screen flex flex-col items-center justify-center">
       <div className="absolute top-0 left-0 w-full h-full">
         <div className="absolute top-0 left-0 w-full h-full bg-black/50"></div>
-        <img
-          src="/public/hero-img.jpg"
-          alt="Hero image"
-          className="w-full h-full"
-        />
+        <img src={heroImg} alt="Hero image" className="w-full h-full" />
       </div>
       <ContainerWrapper>
         <section className="relative bg-white/70 shadow-2xl backdrop-blur-[3px] rounded-xl py-8 px-6 lg:px-14 w-full mx-auto lg:w-[80%]">
