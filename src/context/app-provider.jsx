@@ -18,6 +18,8 @@ const AppProvider = ({ children }) => {
   const [isDetectingLanguage, setIsDetectingLanguage] = useState(false);
   const [isTranslatingLanguage, setIsTranslatingLanguage] = useState(false);
   const [isSummarizing, setIsSummarizing] = useState(false);
+  const [isCheckingTranslationSupport, setIsCheckingTranslationSupport] =
+    useState(false);
 
   // Clear Chat
   const clearChat = () => {
@@ -46,6 +48,8 @@ const AppProvider = ({ children }) => {
         userOutput,
         translateRef,
         summarizeRef,
+        isCheckingTranslationSupport,
+        setIsCheckingTranslationSupport,
         scrollToSection,
         setUserOutput,
         clearChat,

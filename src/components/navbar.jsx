@@ -4,7 +4,7 @@ import { useContext } from "react";
 import AppContext from "../context/app-context";
 
 const Navbar = () => {
-  const { clearChat } = useContext(AppContext);
+  const { clearChat, isSummarizing } = useContext(AppContext);
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 backdrop-blur-2xl bg-blue-950/70 py-3.5">
@@ -13,7 +13,11 @@ const Navbar = () => {
           <h1 className="[font-family:monospace] text-xl">
             Lingua<span className="text-orange-400 italic">AI</span>
           </h1>
-          <Button onClick={clearChat}>Clear Chat</Button>
+          <Button onClick={clearChat} disabled={isSummarizing}>
+            <span className={`${isSummarizing && "text-white"}`}>
+              Clear Chat
+            </span>
+          </Button>
         </Flex>
       </ContainerWrapper>
     </nav>
