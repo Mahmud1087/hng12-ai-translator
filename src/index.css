@@ -28,3 +28,12 @@
 .ant-input::placeholder {
   @apply text-gray-50/55 italic;
 }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
