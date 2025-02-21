@@ -22,6 +22,8 @@ const UserOutput = () => {
     scrollToSection,
     summarizeRef,
     translateRef,
+    isSummarizing,
+    isTranslatingLanguage,
   } = useContext(AppContext);
   const { translatorAPI, summarizerAPI } = useApis();
 
@@ -51,8 +53,15 @@ const UserOutput = () => {
                   translatorAPI(userOutput, selectedLang);
                   scrollToSection(translateRef);
                 }}
+                disabled={isTranslatingLanguage}
               >
-                Translate
+                <span
+                  className={`${
+                    isTranslatingLanguage ? "text-blue-950" : "text-white"
+                  }`}
+                >
+                  Translate
+                </span>
               </Button>
             </Flex>
             {userOutput.length >= 150 && detectedLanguage === "English" && (
@@ -63,8 +72,15 @@ const UserOutput = () => {
                   scrollToSection(summarizeRef);
                   summarizerAPI(userOutput);
                 }}
+                disabled={isSummarizing}
               >
-                Summarize
+                <span
+                  className={`${
+                    isSummarizing ? "text-blue-950" : "text-white"
+                  }`}
+                >
+                  Summarize
+                </span>
               </Button>
             )}
           </div>

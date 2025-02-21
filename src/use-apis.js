@@ -77,8 +77,8 @@ const useApis = () => {
   const summarizerAPI = async (textToSummarize) => {
     const options = {
       // sharedContext: 'This is a scientific article',
-      // type: "key-points",
-      // format: "markdown",
+      type: "teaser",
+      format: "markdown",
       length: "medium",
     };
 
