@@ -8,8 +8,9 @@ import ApiLoading from "./components/api-loading";
 import UserInput from "./components/user-input";
 import { toast } from "react-toastify";
 import { VscLoading } from "react-icons/vsc";
+import { Button } from "antd";
 
-const TranslatorApp = () => {
+const TranslatorApp = ({ goHome }) => {
   const {
     setDetector,
     isTranslationSupported,
@@ -50,25 +51,37 @@ const TranslatorApp = () => {
 
   return (
     <>
-      <div className="h-screen w-screen flex flex-col gap-8 items-center justify-center">
-        {isCheckingTranslationSupport && (
+      {isCheckingTranslationSupport && (
+        <div className="h-screen w-screen flex flex-col gap-8 items-center justify-center">
           <VscLoading className="animate-spin text-4xl" />
-        )}
-        {!isTranslationSupported && (
+        </div>
+      )}
+      {!isTranslationSupported && (
+        <div className="h-screen w-screen flex flex-col gap-8 items-center justify-center">
           <p className="text-red-300 text-center italic text-2xl px-2.5">
             Chrome Built-in API is not supported on this browser. <br />
           </p>
-        )}
-      </div>
+          <Button
+            type="primary"
+            onClick={() => {
+              goHome();
+            }}
+          >
+            Go back
+          </Button>
+        </div>
+      )}
 
       <section>
-        <Navbar />
+        <Navbar goHome={goHome} />
         <ContainerWrapper>
           <div className="h-screen flex flex-col-reverse">
-            <UserInput />
+            <div>
+              <UserInput />
+            </div>
 
-            <section className="flex flex-col-reverse h-[60vh]">
-              <div className="mb-8 overflow-y-scroll flex flex-col gap-8 no-scrollbar">
+            <section className="flex flex-col-reverse h-[68vh]">
+              <div className="pb-8 overflow-y-scroll flex flex-col gap-8 no-scrollbar">
                 {/* User Output */}
                 {userOutput && <UserOutput />}
 

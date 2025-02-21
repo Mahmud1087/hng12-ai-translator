@@ -3,12 +3,11 @@ import { GrSend } from "react-icons/gr";
 import useApis from "../use-apis";
 import { useContext } from "react";
 import AppContext from "../context/app-context";
+import { toast } from "react-toastify";
 
 const UserInput = () => {
   const [form] = Form.useForm();
   const {
-    setTranslatedText,
-    setSummarizedText,
     isDetectingLanguage,
     isSummarizing,
     isTranslatingLanguage,
@@ -17,16 +16,21 @@ const UserInput = () => {
 
   const { detectorAPI } = useApis();
 
-  const handleTranslate = (values) => {
+  const handleSumbit = (values) => {
+    if (!values.inputText) {
+      toast.warn("Input field cannot be empty");
+      return;
+    }
+
     detectorAPI(values.inputText);
     setUserOutput(values.inputText);
-    setTranslatedText("");
-    setSummarizedText("");
+    localStorage.setItem("translatedText", "");
+    localStorage.setItem("summarizedText", "");
     form.resetFields();
   };
 
   return (
-    <Form form={form} onFinish={(values) => handleTranslate(values)}>
+    <Form form={form} onFinish={(values) => handleSumbit(values)}>
       <div className="relative">
         <Form.Item name="inputText">
           <Input.TextArea

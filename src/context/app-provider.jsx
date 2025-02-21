@@ -1,14 +1,22 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import AppContext from "./app-context";
 
 const AppProvider = ({ children }) => {
-  const [detectedLanguage, setDetectedLanguage] = useState("");
+  const [detectedLanguage, setDetectedLanguage] = useState(
+    localStorage.getItem("detectedLanguage") || ""
+  );
   const [confidence, setConfidence] = useState("");
-  const [translatedText, setTranslatedText] = useState("");
+  const [translatedText, setTranslatedText] = useState(
+    localStorage.getItem("translatedText") || ""
+  );
   const [isTranslationSupported, setIsTranslationSupported] = useState(false);
   const [detector, setDetector] = useState(null);
-  const [summarizedText, setSummarizedText] = useState("");
-  const [userOutput, setUserOutput] = useState("");
+  const [summarizedText, setSummarizedText] = useState(
+    localStorage.getItem("summarizedText") || ""
+  );
+  const [userOutput, setUserOutput] = useState(
+    localStorage.getItem("userOutput") || ""
+  );
 
   // Refs for scroll to view
   const translateRef = useRef(null);
@@ -21,11 +29,24 @@ const AppProvider = ({ children }) => {
   const [isCheckingTranslationSupport, setIsCheckingTranslationSupport] =
     useState(false);
 
+  useEffect(() => {
+    localStorage.setItem("translatedText", translatedText);
+    localStorage.setItem("summarizedText", summarizedText);
+    localStorage.setItem("userOutput", userOutput);
+    localStorage.setItem("detectedLanguage", detectedLanguage);
+  }, [translatedText, summarizedText, userOutput, detectedLanguage]);
+
   // Clear Chat
   const clearChat = () => {
     setTranslatedText("");
     setSummarizedText("");
     setUserOutput("");
+    setDetectedLanguage("");
+
+    localStorage.removeItem("translatedText");
+    localStorage.removeItem("summarizedText");
+    localStorage.removeItem("userOutput");
+    localStorage.removeItem("detectedLanguage");
   };
 
   // Scroll to output section

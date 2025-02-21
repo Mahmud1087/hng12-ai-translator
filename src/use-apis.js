@@ -46,8 +46,7 @@ const useApis = () => {
 
       setTranslatedText(await translator.translate(textToTranslate));
     } catch (err) {
-      setTranslatedText("An error occurred. Please try again.");
-      console.error(err.name, err.message);
+      toast.error(err.message);
     } finally {
       setIsTranslatingLanguage(false);
     }
@@ -67,6 +66,7 @@ const useApis = () => {
       setDetectedLanguage(languageTagToHumanReadable(detectedLanguage, "en"));
       setConfidence(`${(confidence * 100).toFixed(1)}% sure`);
     } catch (error) {
+      toast.error("Error detecting language");
       console.error("Detection error:", error);
     } finally {
       setIsDetectingLanguage(false);
@@ -77,8 +77,8 @@ const useApis = () => {
   const summarizerAPI = async (textToSummarize) => {
     const options = {
       // sharedContext: 'This is a scientific article',
-      type: "key-points",
-      format: "markdown",
+      // type: "key-points",
+      // format: "markdown",
       length: "medium",
     };
 
@@ -87,7 +87,7 @@ const useApis = () => {
     try {
       let summarizer;
       if (available === "no") {
-        alert("Summarizer not supported in this browser");
+        toast.error("Summarizer not supported in this browser");
         return;
       }
       if (available === "readily") {
@@ -104,6 +104,7 @@ const useApis = () => {
         await summarizer.ready;
       }
     } catch (error) {
+      toast.error(error.message);
       console.log(error);
     } finally {
       setIsSummarizing(false);
