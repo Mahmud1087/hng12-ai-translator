@@ -11,7 +11,7 @@ const Navbar = ({ goHome }) => {
       <ContainerWrapper>
         <Flex align="center" justify="space-between">
           <h1
-            className="[font-family:monospace] text-xl"
+            className="[font-family:monospace] text-xl cursor-pointer"
             onClick={() => goHome()}
           >
             Lingua<span className="text-orange-400 italic">AI</span>
