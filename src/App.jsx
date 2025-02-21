@@ -40,7 +40,7 @@ const TranslatorApp = ({ goHome }) => {
         const newDetector = await self.ai.languageDetector.create();
         setDetector(newDetector);
       } catch (error) {
-        toast.error(error.message);
+        console.log(error);
       } finally {
         setIsCheckingTranslationSupport(false);
       }
